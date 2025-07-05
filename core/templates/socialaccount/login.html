@@ -1,0 +1,52 @@
+{% extends "core/base.html" %} {% load i18n %}
+{% load socialaccount %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="col-md-6 col-lg-5">
+
+    <div class="card text-center shadow-sm animate__animated animate__fadeIn">
+      <div class="card-body p-4 p-md-5">
+
+        <h2 class="fw-bold mb-3">Connecting...</h2>
+
+        <p class="text-muted mb-4">
+          {% blocktrans with provider.name as provider %}
+            Please wait while we redirect you to {{ provider }}.
+          {% endblocktrans %}
+        </p>
+
+        <div class="d-flex justify-content-center mb-4">
+          <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+
+        <form id="social-login-form" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary d-none">Continue</button>
+        </form>
+
+        <p class="small text-muted mt-3">
+          Taking too long? <a href="javascript:document.getElementById('social-login-form').submit();">Click here to continue</a>.
+        </p>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // This script will automatically submit the form after 1 second.
+  window.onload = function() {
+    setTimeout(function() {
+      const form = document.getElementById('social-login-form');
+      if (form) {
+        form.submit();
+      }
+    }, 1000); // 1000 milliseconds = 1 second
+  };
+</script>
+
+{% endblock %}

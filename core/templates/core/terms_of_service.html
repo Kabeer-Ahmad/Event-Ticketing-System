@@ -1,0 +1,336 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Terms of Service - ETS Event Ticketing System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Bootstrap CSS & Animate.css -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 30%, #e2e8f0 60%, #f8fafc 100%);
+      background-size: 300% 300%;
+      animation: gradientShift 20s ease-in-out infinite;
+    }
+    
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .navbar {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Gradient signup button */
+    .btn-signup {
+      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 25%, #06b6d4 50%, #10b981 75%, #059669 100%);
+      background-size: 300% 300%;
+      animation: btnGradientShift 4s ease-in-out infinite;
+      border: none;
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    }
+    
+    @keyframes btnGradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    
+    .btn-signup:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+      background-size: 400% 400%;
+      animation-duration: 2s;
+      color: white;
+    }
+
+    .hero-section {
+      padding: 120px 0 80px 0;
+      text-align: center;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #f8fafc 100%);
+      background-size: 200% 200%;
+      animation: heroGradientShift 18s ease-in-out infinite;
+      color: #374151;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    @keyframes heroGradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .content-section {
+      padding: 60px 0;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+    }
+
+    .terms-content h2 {
+      color: #1e293b;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .terms-content h3 {
+      color: #334155;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+    }
+
+    .terms-content p {
+      color: #475569;
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .terms-content ul {
+      color: #475569;
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    /* Dark professional footer */
+    footer {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%) !important;
+      color: #e2e8f0 !important;
+      padding: 3rem 1rem 2rem 1rem !important;
+      font-size: 0.9rem;
+      text-align: center;
+      position: relative;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    footer a {
+      color: #94a3b8 !important;
+      margin: 0 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    footer a:hover {
+      color: #cbd5e1 !important;
+      text-decoration: underline;
+    }
+    
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .footer-links {
+      margin-bottom: 1.5rem;
+    }
+    
+    .footer-copyright {
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+  <div class="container">
+    <a class="navbar-brand fw-bold fs-3 text-primary" href="{% url 'event_list' %}">
+      <i class="fa-solid fa-ticket me-2"></i>ETS
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link fw-semibold px-3 py-2 rounded-pill" href="{% url 'event_list' %}">
+            <i class="fa-solid fa-home me-1"></i>Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fw-semibold px-3 py-2 rounded-pill" href="{% url 'about' %}">
+            <i class="fa-solid fa-info-circle me-1"></i>About
+          </a>
+        </li>
+      </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link fw-semibold px-3 py-2 rounded-pill" href="{% url 'login' %}">
+            <i class="fa-solid fa-sign-in-alt me-1"></i>Login
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-signup px-4 py-2 rounded-pill fw-semibold" href="{% url 'account_signup' %}">
+            <i class="fa-solid fa-user-plus me-1"></i>Sign Up
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container">
+    <h1 class="display-4 fw-bold mb-4 animate__animated animate__fadeInDown">
+      Terms of Service
+    </h1>
+    <p class="lead animate__animated animate__fadeInUp">
+      Please read these terms carefully before using our event ticketing platform.
+    </p>
+  </div>
+</section>
+
+<!-- Content Section -->
+<section class="content-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="terms-content">
+          <p><strong>Last updated:</strong> December 30, 2025</p>
+          
+          <h2>1. Acceptance of Terms</h2>
+          <p>By accessing and using the ETS platform, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using our services.</p>
+
+          <h2>2. Use License</h2>
+          <p>Permission is granted to temporarily use ETS for personal, non-commercial transitory viewing and ticket booking only. This license does not include:</p>
+          <ul>
+            <li>Modifying or copying the materials</li>
+            <li>Using the materials for commercial purposes</li>
+            <li>Attempting to reverse engineer any software</li>
+            <li>Removing any copyright or proprietary notations</li>
+          </ul>
+
+          <h2>3. Account Responsibilities</h2>
+          <p>When creating an account, you agree to:</p>
+          <ul>
+            <li>Provide accurate, current, and complete information</li>
+            <li>Maintain the security of your password</li>
+            <li>Accept responsibility for all activities under your account</li>
+            <li>Notify us immediately of any unauthorized use</li>
+          </ul>
+
+          <h2>4. Ticket Booking and Holds</h2>
+          
+          <h3>Fair Distribution System</h3>
+          <p>Our platform uses a first-come-first-served ticket holding system based on login time to ensure fair distribution.</p>
+          
+          <h3>Ticket Holds</h3>
+          <ul>
+            <li>Tickets are held for 10 minutes upon login</li>
+            <li>Holds expire automatically if not converted to bookings</li>
+            <li>Users can manually release holds to make them available to others</li>
+            <li>One ticket hold per user per event is allowed</li>
+          </ul>
+
+          <h3>Booking Confirmation</h3>
+          <p>Tickets are confirmed only after successful payment processing and receipt of confirmation email with QR code.</p>
+
+          <h2>5. Payment Terms</h2>
+          <ul>
+            <li>All prices are displayed in the local currency</li>
+            <li>Payment is required at the time of booking</li>
+            <li>We accept major credit cards and secure payment methods</li>
+            <li>Processing fees may apply</li>
+          </ul>
+
+          <h2>6. Refund and Cancellation Policy</h2>
+          <ul>
+            <li>Refund eligibility depends on event organizer policies</li>
+            <li>Service fees are generally non-refundable</li>
+            <li>Event cancellations will result in full refunds</li>
+            <li>Refund processing may take 5-10 business days</li>
+          </ul>
+
+          <h2>7. Prohibited Activities</h2>
+          <p>You agree not to:</p>
+          <ul>
+            <li>Use automated systems to purchase tickets (bots)</li>
+            <li>Resell tickets above face value where prohibited</li>
+            <li>Create multiple accounts to circumvent purchase limits</li>
+            <li>Engage in fraudulent or misleading activities</li>
+            <li>Interfere with the platform's operation</li>
+          </ul>
+
+          <h2>8. Event Access</h2>
+          <ul>
+            <li>Valid ticket and ID may be required for entry</li>
+            <li>Event organizers reserve the right to refuse entry</li>
+            <li>Tickets are non-transferable unless explicitly stated</li>
+            <li>Lost or stolen tickets may not be replaceable</li>
+          </ul>
+
+          <h2>9. Intellectual Property</h2>
+          <p>All content on the ETS platform, including text, graphics, logos, and software, is owned by ETS or its licensors and protected by copyright and trademark laws.</p>
+
+          <h2>10. Privacy and Data Protection</h2>
+          <p>Your privacy is important to us. Please review our Privacy Policy to understand how we collect, use, and protect your information.</p>
+
+          <h2>11. Platform Availability</h2>
+          <p>While we strive for 24/7 availability, the platform may be temporarily unavailable for maintenance, updates, or due to circumstances beyond our control.</p>
+
+          <h2>12. Limitation of Liability</h2>
+          <p>ETS shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of the platform.</p>
+
+          <h2>13. Indemnification</h2>
+          <p>You agree to indemnify and hold ETS harmless from any claims, damages, or expenses arising from your use of the platform or violation of these terms.</p>
+
+          <h2>14. Modifications to Service</h2>
+          <p>ETS reserves the right to modify or discontinue the service at any time without notice. We are not liable for any modifications, suspensions, or discontinuations.</p>
+
+          <h2>15. Governing Law</h2>
+          <p>These terms are governed by the laws of [Your Jurisdiction]. Any disputes shall be resolved in the courts of [Your Jurisdiction].</p>
+
+          <h2>16. Changes to Terms</h2>
+          <p>We may revise these terms at any time. Continued use of the platform after changes constitutes acceptance of the new terms.</p>
+
+          <h2>17. Contact Information</h2>
+          <p>If you have questions about these Terms of Service, please contact us at:</p>
+          <ul>
+            <li>Email: legal@ets-platform.com</li>
+            <li>Address: ETS Legal Team, [Your Address]</li>
+            <li>Phone: [Your Phone Number]</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-content">
+    <div class="footer-links">
+      <a href="{% url 'event_list' %}">Home</a>
+      <a href="{% url 'about' %}">About</a>
+      <a href="#events">Events</a>
+      <a href="{% url 'account_signup' %}">Sign Up</a>
+      <a href="{% url 'login' %}">Login</a>
+      <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
+      <a href="{% url 'terms_of_service' %}">Terms of Service</a>
+      <a href="{% url 'contact_us' %}">Contact Us</a>
+    </div>
+    <div class="footer-copyright">
+      &copy; 2025 ETS - Event Ticketing System. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html> 

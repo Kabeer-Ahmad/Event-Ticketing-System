@@ -1,0 +1,551 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard | ETS{% endblock %}
+
+{% block extra_styles %}
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #f8fafc 0%, #e4e7ff 50%, #e0f7ff 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 12s ease-in-out infinite;
+    }
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .glassbar {
+      backdrop-filter: blur(6px) saturate(160%);
+      background: rgba(24, 56, 129, 0.75) !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .ticket-card, .event-card {
+      transition: transform 0.3s, box-shadow 0.3s;
+      border: none;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .ticket-card:hover, .event-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 22px rgba(0, 0, 0, 0.15);
+    }
+
+    .scroll-column {
+      max-height: 78vh;
+      overflow-y: auto;
+      padding-right: .75rem;
+    }
+
+    .btn-checkin {
+      background: linear-gradient(90deg, #28a745 0%, #20c063 100%);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      padding: 0.4rem 1.2rem;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(40, 167, 69, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-checkin:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(40, 167, 69, 0.45);
+    }
+
+    .btn-checkin:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+      box-shadow: none;
+    }
+
+    .hold-timer {
+      background: linear-gradient(90deg, #ff6b6b, #ffa726);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: bold;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+
+    .ticket-stats {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      border: 2px solid transparent;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .stat-available { border-color: #28a745; color: #28a745; }
+    .stat-booked { border-color: #6f42c1; color: #6f42c1; }
+    .stat-held { border-color: #fd7e14; color: #fd7e14; }
+
+    .status-badge {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .status-held { background: #fd7e14; color: white; }
+    .status-booked { background: #6f42c1; color: white; }
+    .status-sold-out { background: #dc3545; color: white; }
+
+    .progress-ring {
+      width: 60px;
+      height: 60px;
+    }
+
+    .progress-ring__circle {
+      stroke: #e6e6e6;
+      stroke-width: 4;
+      fill: transparent;
+      r: 26;
+      cx: 30;
+      cy: 30;
+    }
+
+    .progress-ring__progress {
+      stroke: #28a745;
+      stroke-width: 4;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.5s;
+    }
+
+    /* Responsive */
+    @media (max-width: 991.98px) {
+      .navbar .btn-outline-light {
+        width: 100%;
+        margin-bottom: 0.5rem;
+      }
+      .navbar .ms-auto {
+        width: 100%;
+        justify-content: space-between;
+        padding-top: 0.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Messages -->
+{% if messages %}
+<div class="container mt-3">
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="container py-5">
+  <!-- WebSocket Connection Status -->
+  <div class="d-flex justify-content-end mb-3">
+    <div id="ws-status" class="small badge bg-secondary">
+      <i class="fa-solid fa-wifi"></i> Connecting...
+    </div>
+  </div>
+  
+  <div class="row g-5">
+
+    <!-- 🎫 ACTIVE TICKETS -->
+    <div class="col-12 col-lg-4 scroll-column">
+      <h4 class="fw-bold mb-3 text-primary">
+        <i class="fa-solid fa-ticket me-2"></i>Active Tickets ({{ active_tickets.count }})
+      </h4>
+
+      {% if active_tickets %}
+        {% for ticket in active_tickets %}
+        <div class="card ticket-card mb-4 animate__animated animate__fadeInUp" id="ticket-{{ ticket.id }}">
+          <div class="card-body">
+            <h5>{{ ticket.event.name }}</h5>
+            <p class="text-muted small mb-2">
+              {{ ticket.event.date|date:"M d, Y P" }}<br>{{ ticket.event.venue }}
+            </p>
+            {% if ticket.qr_code %}
+              <img src="{{ ticket.qr_code.url }}" alt="QR" class="img-thumbnail mb-2" style="width:100px;height:100px;">
+            {% else %}
+              <div class="bg-light border rounded d-flex align-items-center justify-content-center mb-2" style="width:100px;height:100px;">
+                <small class="text-muted">QR Generating...</small>
+              </div>
+            {% endif %}
+            <div class="d-flex flex-column gap-2">
+              <button class="btn btn-checkin d-flex align-items-center gap-2" data-id="{{ ticket.id }}">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>Check In</span>
+              </button>
+              <a href="{% url 'download_ticket_pdf' ticket.id %}" class="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center gap-2">
+                <i class="fa-solid fa-file-arrow-down"></i>
+                <span>Download PDF</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="alert alert-info">No active tickets.</div>
+      {% endif %}
+    </div>
+
+    <!-- 🕓 TICKET HOLDS -->
+    <div class="col-12 col-lg-4 scroll-column">
+      <h4 class="fw-bold mb-3 text-warning">
+        <i class="fa-solid fa-hourglass-half me-2"></i>Ticket Holds ({{ user_holds.count }})
+      </h4>
+
+      {% if user_holds %}
+        {% for hold in user_holds %}
+        <div class="card ticket-card mb-4 animate__animated animate__fadeInUp position-relative">
+          <div class="card-body">
+            <h5>{{ hold.event.name }}</h5>
+            <p class="text-muted small mb-2">
+              {{ hold.event.date|date:"M d, Y P" }}<br>{{ hold.event.venue }}
+            </p>
+            
+            <div class="hold-timer mb-3" id="timer-{{ hold.id }}" 
+                 data-expires="{{ hold.expires_at|date:'c' }}">
+              <i class="fa-solid fa-clock me-1"></i>
+              <span class="timer-text">Calculating...</span>
+            </div>
+            
+            <div class="d-flex gap-2">
+              <a href="{% url 'book_ticket' hold.event.id %}" 
+                 class="btn btn-success flex-fill">
+                <i class="fa-solid fa-ticket me-1"></i>Book Now
+              </a>
+              <form method="post" action="{% url 'release_hold' hold.event.id %}" class="flex-shrink-0">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger btn-sm">
+                  <i class="fa-solid fa-times"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="alert alert-info">
+          <i class="fa-solid fa-info-circle me-2"></i>
+          No active holds. Holds are automatically created when you login and tickets are available.
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- 📅 UPCOMING EVENTS -->
+    <div class="col-12 col-lg-4 scroll-column">
+      <h4 class="fw-bold mb-3 text-success">
+        <i class="fa-solid fa-calendar-days me-2"></i>All Events
+      </h4>
+
+      {% for event_data in events_with_data %}
+        {% with event=event_data.event stats=event_data.stats status=event_data.status %}
+        <div class="card event-card mb-4 animate__animated animate__fadeInUp position-relative">
+          <div class="card-body d-flex flex-column">
+            {% if status == 'held' %}
+              <span class="status-badge status-held">Held for You</span>
+            {% elif status == 'booked' %}
+              <span class="status-badge status-booked">Booked</span>
+            {% elif status == 'sold_out' %}
+              <span class="status-badge status-sold-out">Sold Out</span>
+            {% endif %}
+            
+            <h5>{{ event.name }}</h5>
+            <p class="text-muted small mb-3">
+              {{ event.date|date:"M d, Y P" }}<br>{{ event.venue }}
+            </p>
+
+            <!-- Ticket Statistics -->
+            <div class="ticket-stats">
+              <div class="stat-item stat-available">
+                <i class="fa-solid fa-ticket"></i>
+                {{ stats.available }} Available
+              </div>
+              <div class="stat-item stat-booked">
+                <i class="fa-solid fa-check"></i>
+                {{ stats.booked }} Booked
+              </div>
+              {% if stats.held > 0 %}
+              <div class="stat-item stat-held">
+                <i class="fa-solid fa-hourglass-half"></i>
+                {{ stats.held }} Held
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Progress Ring -->
+            <div class="d-flex align-items-center mb-3">
+              <svg class="progress-ring me-3" width="60" height="60">
+                <circle class="progress-ring__circle" 
+                        cx="30" cy="30" r="25" 
+                        fill="none" 
+                        stroke="#e5e7eb" 
+                        stroke-width="4" />
+                <circle class="progress-ring__progress" 
+                        cx="30" cy="30" r="25" 
+                        fill="none" 
+                        stroke="#3b82f6" 
+                        stroke-width="4"
+                        stroke-linecap="round"
+                        stroke-dasharray="{{ stats.circumference }}"
+                        stroke-dashoffset="{{ stats.dash_offset }}"
+                        transform="rotate(-90 30 30)" />
+              </svg>
+              <div>
+                <small class="text-muted">{{ stats.percentage_sold|floatformat:1 }}% Sold</small><br>
+                <small class="text-muted">{{ stats.capacity }} Total Capacity</small>
+              </div>
+            </div>
+
+            <!-- Action Button -->
+            {% if status == 'booked' %}
+              <span class="badge bg-secondary mt-auto">Already Booked</span>
+            {% elif status == 'held' %}
+              <a href="{% url 'book_ticket' event.id %}" class="btn btn-warning mt-auto">
+                <i class="fa-solid fa-lightning me-1"></i>Complete Booking
+              </a>
+            {% elif status == 'sold_out' %}
+              <button class="btn btn-outline-secondary mt-auto" disabled>
+                <i class="fa-solid fa-times me-1"></i>Sold Out
+              </button>
+            {% else %}
+              <a href="{% url 'book_ticket' event.id %}" class="btn btn-success mt-auto">
+                <i class="fa-solid fa-ticket me-1"></i>Book Ticket
+              </a>
+            {% endif %}
+          </div>
+        </div>
+        {% endwith %}
+      {% empty %}
+        <div class="alert alert-info">No upcoming events.</div>
+      {% endfor %}
+    </div>
+
+    <!-- 🏆 USED TICKETS (Hidden by default, can be shown via toggle) -->
+    {% if used_tickets %}
+    <div class="col-12">
+      <div class="text-center mb-4">
+        <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" 
+                data-bs-target="#usedTicketsSection" aria-expanded="false">
+          <i class="fa-solid fa-history me-2"></i>Show Used Tickets ({{ used_tickets.count }})
+        </button>
+      </div>
+      
+      <div class="collapse" id="usedTicketsSection">
+        <h4 class="fw-bold mb-3 text-secondary text-center">
+          <i class="fa-solid fa-check me-2"></i>Used Tickets
+        </h4>
+        <div class="row">
+          {% for ticket in used_tickets %}
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card ticket-card animate__animated animate__fadeInUp">
+              <div class="card-body position-relative">
+                <h6>{{ ticket.event.name }}</h6>
+                <p class="text-muted small mb-2">
+                  {{ ticket.event.date|date:"M d, Y P" }}<br>{{ ticket.event.venue }}
+                </p>
+                <span class="badge bg-success position-absolute top-0 end-0 m-2">Checked-In</span>
+                <a href="{% url 'download_ticket_pdf' ticket.id %}" 
+                   class="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center gap-2 mt-3">
+                  <i class="fa-solid fa-file-arrow-down"></i>
+                  <span>Download PDF</span>
+                </a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<!-- CSRF Token for JavaScript -->
+{% csrf_token %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// WebSocket connection for real-time updates
+const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const dashboardSocket = new WebSocket(
+    protocol + '//' + window.location.host + '/ws/dashboard/'
+);
+
+// Hold timers data (updated via WebSocket)
+let holdTimers = {};
+
+// WebSocket message handler
+dashboardSocket.onmessage = function(e) {
+    const data = JSON.parse(e.data);
+    console.log('WebSocket message:', data);
+    
+    switch(data.type) {
+        case 'holds_countdown':
+            updateHoldCountdowns(data.holds);
+            break;
+        case 'ticket_update':
+        case 'hold_update':
+        case 'dashboard_update':
+            // Refresh page for major updates
+            setTimeout(() => location.reload(), 1000);
+            break;
+    }
+};
+
+// Update hold countdowns in real-time
+function updateHoldCountdowns(holds) {
+    holds.forEach(hold => {
+        const timerElement = document.getElementById(`timer-${hold.id}`);
+        if (timerElement) {
+            const timeLeft = hold.time_left_seconds;
+            
+            if (timeLeft <= 0) {
+                timerElement.innerHTML = '<i class="fa-solid fa-times me-1"></i>Expired';
+                timerElement.classList.add('bg-danger');
+                // Refresh page after short delay
+                setTimeout(() => location.reload(), 2000);
+            } else {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerElement.querySelector('.timer-text').textContent = 
+                    `${minutes}:${seconds.toString().padStart(2, '0')} left`;
+                
+                // Add urgency styling
+                if (timeLeft <= 60) {
+                    timerElement.classList.add('text-danger', 'fw-bold');
+                } else if (timeLeft <= 300) {
+                    timerElement.classList.add('text-warning');
+                }
+            }
+        }
+    });
+}
+
+// Fallback timer update for when WebSocket data isn't available
+function updateLegacyTimers() {
+    document.querySelectorAll('.hold-timer').forEach(timer => {
+        if (timer.dataset.expires) {
+            const expiresAt = new Date(timer.dataset.expires);
+            const now = new Date();
+            const diff = expiresAt - now;
+            
+            if (diff <= 0) {
+                timer.innerHTML = '<i class="fa-solid fa-times me-1"></i>Expired';
+                timer.classList.add('bg-danger');
+                setTimeout(() => location.reload(), 2000);
+            } else {
+                const minutes = Math.floor(diff / 60000);
+                const seconds = Math.floor((diff % 60000) / 1000);
+                const timerText = timer.querySelector('.timer-text');
+                if (timerText) {
+                    timerText.textContent = `${minutes}:${seconds.toString().padStart(2, '0')} left`;
+                }
+            }
+        }
+    });
+}
+
+// WebSocket connection handlers
+dashboardSocket.onerror = function(e) {
+    console.error('Dashboard WebSocket error:', e);
+    updateConnectionStatus(false);
+};
+
+// Check-in functionality
+document.querySelectorAll('.btn-checkin').forEach(btn => {
+    btn.addEventListener('click', async function() {
+        const ticketId = this.dataset.id;
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        // Update button state
+        const originalContent = this.innerHTML;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Checking...';
+        this.disabled = true;
+        
+        try {
+            const response = await fetch(`/checkin/${ticketId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                }
+            });
+            
+            const data = await response.json();
+            if (data.status === 'ok') {
+                // Don't reload immediately, WebSocket will handle updates
+                this.innerHTML = '<i class="fa-solid fa-check me-1"></i>Checked In';
+                this.classList.remove('btn-success');
+                this.classList.add('btn-secondary');
+                this.disabled = true;
+            } else if (data.status === 'already') {
+                alert('Ticket already checked in!');
+                this.innerHTML = originalContent;
+                this.disabled = false;
+            }
+        } catch (error) {
+            console.error('Check-in error:', error);
+            alert('Network error, please try again.');
+            this.innerHTML = originalContent;
+            this.disabled = false;
+        }
+    });
+});
+
+// Connection status indicator
+function updateConnectionStatus(connected) {
+    const statusIndicator = document.getElementById('ws-status');
+    if (statusIndicator) {
+        statusIndicator.className = connected ? 'badge bg-success' : 'badge bg-danger';
+        statusIndicator.innerHTML = connected ? 
+            '<i class="fa-solid fa-wifi"></i> Live' : 
+            '<i class="fa-solid fa-wifi"></i> Offline';
+    }
+}
+
+// Show connection status
+dashboardSocket.onopen = function(e) {
+    console.log('Dashboard WebSocket connected');
+    updateConnectionStatus(true);
+};
+
+dashboardSocket.onclose = function(e) {
+    console.log('Dashboard WebSocket disconnected');
+    updateConnectionStatus(false);
+};
+
+// Initialize legacy timers as fallback
+updateLegacyTimers();
+</script>
+{% endblock %}

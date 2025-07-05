@@ -1,0 +1,159 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}WebSocket Test{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-wifi"></i> WebSocket Connection Test</h3>
+                </div>
+                <div class="card-body">
+                    
+                    <!-- Connection Status -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Events WebSocket</h5>
+                            <span id="events-status" class="badge bg-secondary">Disconnected</span>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Dashboard WebSocket</h5>
+                            <span id="dashboard-status" class="badge bg-secondary">Disconnected</span>
+                        </div>
+                    </div>
+
+                    <!-- Messages Log -->
+                    <div class="mb-3">
+                        <h5>WebSocket Messages</h5>
+                        <div id="messages" class="border p-3" style="height: 300px; overflow-y: auto; background-color: #f8f9fa;">
+                            <small class="text-muted">Connecting to WebSockets...</small>
+                        </div>
+                    </div>
+
+                    <!-- Test Controls -->
+                    <div class="mb-3">
+                        <button id="clear-log" class="btn btn-secondary">Clear Log</button>
+                        <button id="reconnect" class="btn btn-primary">Reconnect</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let eventsSocket = null;
+    let dashboardSocket = null;
+    
+    function log(message, type = 'info') {
+        const messagesDiv = document.getElementById('messages');
+        const timestamp = new Date().toLocaleTimeString();
+        const colorClass = type === 'error' ? 'text-danger' : type === 'success' ? 'text-success' : 'text-info';
+        messagesDiv.innerHTML += `<div class="${colorClass}"><small>[${timestamp}]</small> ${message}</div>`;
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function updateStatus(type, connected) {
+        const statusElement = document.getElementById(`${type}-status`);
+        statusElement.className = connected ? 'badge bg-success' : 'badge bg-danger';
+        statusElement.textContent = connected ? 'Connected' : 'Disconnected';
+    }
+
+    function connectWebSockets() {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const host = window.location.host;
+
+        // Events WebSocket
+        try {
+            eventsSocket = new WebSocket(`${protocol}//${host}/ws/events/`);
+            
+            eventsSocket.onopen = function(e) {
+                log('✅ Events WebSocket connected successfully', 'success');
+                updateStatus('events', true);
+            };
+
+            eventsSocket.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+                log(`📨 Events message: ${data.type}`, 'info');
+                if (data.type === 'events_update' && data.events) {
+                    log(`📊 Received ${data.events.length} events in update`, 'info');
+                }
+            };
+
+            eventsSocket.onclose = function(e) {
+                log(`❌ Events WebSocket closed (code: ${e.code})`, 'error');
+                updateStatus('events', false);
+            };
+
+            eventsSocket.onerror = function(e) {
+                log('❌ Events WebSocket error', 'error');
+                updateStatus('events', false);
+            };
+        } catch (error) {
+            log(`❌ Failed to connect Events WebSocket: ${error}`, 'error');
+        }
+
+        // Dashboard WebSocket (only if user is authenticated)
+        {% if user.is_authenticated %}
+        try {
+            dashboardSocket = new WebSocket(`${protocol}//${host}/ws/dashboard/`);
+            
+            dashboardSocket.onopen = function(e) {
+                log('✅ Dashboard WebSocket connected successfully', 'success');
+                updateStatus('dashboard', true);
+            };
+
+            dashboardSocket.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+                log(`📨 Dashboard message: ${data.type}`, 'info');
+                if (data.type === 'dashboard_update') {
+                    if (data.holds && data.holds.length > 0) {
+                        log(`⏰ Active holds: ${data.holds.length}`, 'info');
+                    }
+                    if (data.tickets && data.tickets.length > 0) {
+                        log(`🎫 Active tickets: ${data.tickets.length}`, 'info');
+                    }
+                }
+            };
+
+            dashboardSocket.onclose = function(e) {
+                log(`❌ Dashboard WebSocket closed (code: ${e.code})`, 'error');
+                updateStatus('dashboard', false);
+            };
+
+            dashboardSocket.onerror = function(e) {
+                log('❌ Dashboard WebSocket error', 'error');
+                updateStatus('dashboard', false);
+            };
+        } catch (error) {
+            log(`❌ Failed to connect Dashboard WebSocket: ${error}`, 'error');
+        }
+        {% else %}
+        log('ℹ️ Dashboard WebSocket requires authentication', 'info');
+        {% endif %}
+    }
+
+    // Clear log button
+    document.getElementById('clear-log').onclick = function() {
+        document.getElementById('messages').innerHTML = '';
+    };
+
+    // Reconnect button
+    document.getElementById('reconnect').onclick = function() {
+        log('🔄 Reconnecting WebSockets...', 'info');
+        if (eventsSocket) eventsSocket.close();
+        if (dashboardSocket) dashboardSocket.close();
+        setTimeout(connectWebSockets, 1000);
+    };
+
+    // Connect on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        log('🚀 Starting WebSocket test...', 'info');
+        connectWebSockets();
+    });
+</script>
+{% endblock %} 

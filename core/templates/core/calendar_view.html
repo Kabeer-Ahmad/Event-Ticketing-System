@@ -1,0 +1,264 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Event Calendar | ETS</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+  <link href="https://unpkg.com/tippy.js@6/themes/light-border.css" rel="stylesheet" />
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 30%, #e2e8f0 60%, #f8fafc 100%);
+      background-size: 300% 300%;
+      animation: gradientShift 20s ease-in-out infinite;
+      padding-top: 70px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+    }
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    #calendar {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+      animation: fadeInUp 1s ease forwards;
+      user-select: none;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* FullCalendar overrides for modern look */
+    .fc-toolbar-title {
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: #184091;
+      user-select: none;
+      transition: color 0.3s ease;
+    }
+    .fc-toolbar-title:hover {
+      color: #2055aa;
+      cursor: default;
+    }
+
+    .fc-button {
+      border-radius: 50px;
+      padding: 0.5rem 1.2rem;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+      transition: all 0.25s ease;
+      border: none;
+      background: #184091;
+      color: #fff;
+    }
+    .fc-button:hover, .fc-button:focus {
+      background: #3c78d8;
+      box-shadow: 0 8px 24px rgb(60 120 216 / 0.3);
+      outline: none;
+    }
+    .fc-button:active {
+      transform: scale(0.95);
+      box-shadow: 0 3px 8px rgb(60 120 216 / 0.4);
+    }
+
+    /* Events style */
+    .fc-event {
+      border-radius: 10px !important;
+      box-shadow: 0 4px 8px rgb(0 0 0 / 0.12);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: #0066ff !important;
+      user-select: none;
+    }
+    .fc-event:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 20px rgb(0 0 0 / 0.25);
+      z-index: 10;
+    }
+
+    /* Tooltip custom */
+    .tippy-box[data-theme~='light-border'] {
+      font-size: 0.9rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgb(0 0 0 / 0.12);
+      padding: 0.75rem 1rem;
+      max-width: 220px;
+    }
+    .tippy-box[data-theme~='light-border'] .tippy-arrow {
+      color: #e0e7ff;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 576px) {
+      #calendar {
+        max-width: 100%;
+        padding: 1rem;
+      }
+      .fc-toolbar-title {
+        font-size: 1.2rem;
+      }
+      .fc-button {
+        padding: 0.3rem 1rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Modern navbar CSS matching landing page */
+    nav.navbar {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    nav.navbar .navbar-brand {
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: #2563eb;
+      transition: color 0.3s ease;
+      letter-spacing: 0.02em;
+    }
+
+    nav.navbar .navbar-brand:hover {
+      color: #1d4ed8;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    nav.navbar .navbar-text {
+      font-weight: 600;
+      font-size: 1.15rem;
+      color: #374151;
+      user-select: none;
+      margin-left: 1rem;
+    }
+
+    nav.navbar .ms-auto {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    nav.navbar .ms-auto span.text-white {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #374151;
+      user-select: none;
+    }
+
+    nav.navbar .ms-auto a.btn-danger {
+      padding: 0.35rem 1rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-radius: 30px;
+      box-shadow: 0 4px 12px rgb(220 38 38 / 0.6);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    nav.navbar .ms-auto a.btn-danger:hover, 
+    nav.navbar .ms-auto a.btn-danger:focus {
+      background-color: #b91c1c;
+      box-shadow: 0 6px 20px rgb(185 28 28 / 0.8);
+      outline: none;
+    }
+
+    @media (max-width: 576px) {
+      nav.navbar .navbar-brand {
+        font-size: 1.2rem;
+      }
+      nav.navbar .navbar-text {
+        font-size: 1rem;
+        margin-left: 0.5rem;
+      }
+      nav.navbar .ms-auto span.text-white {
+        font-size: 0.9rem;
+      }
+      nav.navbar .ms-auto a.btn-danger {
+        padding: 0.3rem 0.8rem;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'user_dashboard' %}">← Dashboard</a>
+    <span class="navbar-text">Event Calendar</span>
+    <div class="ms-auto">
+      <span class="text-white me-3">{{ user.username }}</span>
+      <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+    </div>
+  </div>
+</nav>
+
+<div id="calendar"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const calendarEl = document.getElementById('calendar');
+    const calendarEvents = JSON.parse(document.getElementById('calendar-events-data').textContent);
+
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: window.innerWidth < 576 ? 'listWeek' : 'dayGridMonth',
+      height: 'auto',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: window.innerWidth < 576 ? '' : 'dayGridMonth,listWeek'
+      },
+      events: calendarEvents,
+      dayMaxEvents: true,
+      nowIndicator: true,
+      navLinks: true,
+      eventDidMount: function(info) {
+        tippy(info.el, {
+          content: `
+            <strong>${info.event.title}</strong><br/>
+            Venue: ${info.event.extendedProps.venue}<br/>
+            Status: ${info.event.extendedProps.status}
+          `,
+          allowHTML: true,
+          theme: 'light-border',
+          placement: 'top',
+          animation: 'shift-away',
+          delay: [200, 0],
+        });
+      },
+    });
+
+    calendar.render();
+  });
+</script>
+
+<script id="calendar-events-data" type="application/json">{{ calendar_events_json }}</script>
+
+</body>
+</html>

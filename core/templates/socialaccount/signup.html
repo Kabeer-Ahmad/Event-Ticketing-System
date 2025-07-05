@@ -1,0 +1,46 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h2 class="card-title text-center fw-bold">Almost There!</h2>
+          <p class="text-center text-muted">
+            You've successfully authenticated with Google as <strong>{{ sociallogin.account.extra_data.email }}</strong>.
+            Please complete your registration below.
+          </p>
+
+          <hr class="my-4">
+          
+          <form class="signup" id="signup_form" method="post" action="{% url 'socialaccount_signup' %}">
+            {% csrf_token %}
+
+            {% for field in form %}
+              <div class="mb-3">
+                {{ field.label_tag }}
+                {{ field|add_class:"form-control" }}
+                {% if field.errors %}
+                  <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+                {% endif %}
+              </div>
+            {% endfor %}
+            
+            {% if redirect_field_value %}
+              <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg mt-2">Complete Sign Up</button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,314 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Privacy Policy - ETS Event Ticketing System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Bootstrap CSS & Animate.css -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 30%, #e2e8f0 60%, #f8fafc 100%);
+      background-size: 300% 300%;
+      animation: gradientShift 20s ease-in-out infinite;
+    }
+    
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .navbar {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Gradient signup button */
+    .btn-signup {
+      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 25%, #06b6d4 50%, #10b981 75%, #059669 100%);
+      background-size: 300% 300%;
+      animation: btnGradientShift 4s ease-in-out infinite;
+      border: none;
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    }
+    
+    @keyframes btnGradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    
+    .btn-signup:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+      background-size: 400% 400%;
+      animation-duration: 2s;
+      color: white;
+    }
+
+    .hero-section {
+      padding: 120px 0 80px 0;
+      text-align: center;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #f8fafc 100%);
+      background-size: 200% 200%;
+      animation: heroGradientShift 18s ease-in-out infinite;
+      color: #374151;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    @keyframes heroGradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .content-section {
+      padding: 60px 0;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+    }
+
+    .policy-content h2 {
+      color: #1e293b;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .policy-content h3 {
+      color: #334155;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+    }
+
+    .policy-content p {
+      color: #475569;
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .policy-content ul {
+      color: #475569;
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    /* Dark professional footer */
+    footer {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%) !important;
+      color: #e2e8f0 !important;
+      padding: 3rem 1rem 2rem 1rem !important;
+      font-size: 0.9rem;
+      text-align: center;
+      position: relative;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    footer a {
+      color: #94a3b8 !important;
+      margin: 0 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    footer a:hover {
+      color: #cbd5e1 !important;
+      text-decoration: underline;
+    }
+    
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .footer-links {
+      margin-bottom: 1.5rem;
+    }
+    
+    .footer-copyright {
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+  <div class="container">
+    <a class="navbar-brand fw-bold fs-3 text-primary" href="{% url 'event_list' %}">
+      <i class="fa-solid fa-ticket me-2"></i>ETS
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link fw-semibold px-3 py-2 rounded-pill" href="{% url 'event_list' %}">
+            <i class="fa-solid fa-home me-1"></i>Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fw-semibold px-3 py-2 rounded-pill" href="{% url 'about' %}">
+            <i class="fa-solid fa-info-circle me-1"></i>About
+          </a>
+        </li>
+      </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link fw-semibold px-3 py-2 rounded-pill" href="{% url 'login' %}">
+            <i class="fa-solid fa-sign-in-alt me-1"></i>Login
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-signup px-4 py-2 rounded-pill fw-semibold" href="{% url 'account_signup' %}">
+            <i class="fa-solid fa-user-plus me-1"></i>Sign Up
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container">
+    <h1 class="display-4 fw-bold mb-4 animate__animated animate__fadeInDown">
+      Privacy Policy
+    </h1>
+    <p class="lead animate__animated animate__fadeInUp">
+      Your privacy is important to us. Learn how we collect, use, and protect your information.
+    </p>
+  </div>
+</section>
+
+<!-- Content Section -->
+<section class="content-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="policy-content">
+          <p><strong>Last updated:</strong> December 30, 2025</p>
+          
+          <h2>1. Information We Collect</h2>
+          
+          <h3>Personal Information</h3>
+          <p>When you create an account or book tickets, we may collect:</p>
+          <ul>
+            <li>Name and email address</li>
+            <li>Account credentials</li>
+            <li>Payment information (processed securely by third-party providers)</li>
+            <li>Event preferences and booking history</li>
+          </ul>
+          
+          <h3>Automatically Collected Information</h3>
+          <p>We automatically collect certain information when you use our service:</p>
+          <ul>
+            <li>Device information and browser type</li>
+            <li>IP address and location data</li>
+            <li>Usage patterns and interaction data</li>
+            <li>Cookies and similar tracking technologies</li>
+          </ul>
+
+          <h2>2. How We Use Your Information</h2>
+          <p>We use your information to:</p>
+          <ul>
+            <li>Process ticket bookings and manage your account</li>
+            <li>Send important updates about events and bookings</li>
+            <li>Improve our services and user experience</li>
+            <li>Prevent fraud and ensure security</li>
+            <li>Comply with legal obligations</li>
+          </ul>
+
+          <h2>3. Information Sharing</h2>
+          <p>We do not sell your personal information. We may share information with:</p>
+          <ul>
+            <li>Event organizers (for legitimate event management purposes)</li>
+            <li>Service providers who help us operate our platform</li>
+            <li>Legal authorities when required by law</li>
+            <li>Business partners with your explicit consent</li>
+          </ul>
+
+          <h2>4. Data Security</h2>
+          <p>We implement appropriate technical and organizational measures to protect your data:</p>
+          <ul>
+            <li>Encryption of data in transit and at rest</li>
+            <li>Regular security assessments and updates</li>
+            <li>Access controls and authentication measures</li>
+            <li>Secure payment processing through certified providers</li>
+          </ul>
+
+          <h2>5. Your Rights</h2>
+          <p>You have the right to:</p>
+          <ul>
+            <li>Access and update your personal information</li>
+            <li>Delete your account and associated data</li>
+            <li>Opt-out of marketing communications</li>
+            <li>Request a copy of your data</li>
+            <li>Lodge a complaint with supervisory authorities</li>
+          </ul>
+
+          <h2>6. Cookies and Tracking</h2>
+          <p>We use cookies and similar technologies to enhance your experience. You can control cookie settings through your browser preferences.</p>
+
+          <h2>7. Third-Party Services</h2>
+          <p>Our platform integrates with third-party services (payment processors, analytics tools) that have their own privacy policies. We encourage you to review their policies.</p>
+
+          <h2>8. Children's Privacy</h2>
+          <p>Our service is not intended for children under 13. We do not knowingly collect personal information from children without parental consent.</p>
+
+          <h2>9. International Transfers</h2>
+          <p>Your information may be transferred to and processed in countries other than your own. We ensure appropriate safeguards are in place for such transfers.</p>
+
+          <h2>10. Changes to This Policy</h2>
+          <p>We may update this privacy policy from time to time. We will notify you of significant changes through our platform or via email.</p>
+
+          <h2>11. Contact Us</h2>
+          <p>If you have questions about this privacy policy or our practices, please contact us at:</p>
+          <ul>
+            <li>Email: privacy@ets-platform.com</li>
+            <li>Address: ETS Privacy Team, [Your Address]</li>
+            <li>Phone: [Your Phone Number]</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-content">
+    <div class="footer-links">
+      <a href="{% url 'event_list' %}">Home</a>
+      <a href="{% url 'about' %}">About</a>
+      <a href="#events">Events</a>
+      <a href="{% url 'account_signup' %}">Sign Up</a>
+      <a href="{% url 'login' %}">Login</a>
+      <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
+      <a href="{% url 'terms_of_service' %}">Terms of Service</a>
+      <a href="{% url 'contact_us' %}">Contact Us</a>
+    </div>
+    <div class="footer-copyright">
+      &copy; 2025 ETS - Event Ticketing System. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html> 

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ticket Booked | ETS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+  <!-- Animate.css -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #e0f2ff, #f5faff);
+      min-height: 100vh;
+    }
+    .card {
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
+    
+    <div class="text-center mb-4">
+      <h1 class="fw-bold text-success animate__animated animate__fadeInDown">🎉 Ticket Booked!</h1>
+      <p class="text-muted fs-5">Your spot for <strong>{{ ticket.event.name }}</strong> is confirmed.</p>
+    </div>
+
+    <div class="card shadow p-4 text-center animate__animated animate__fadeInUp">
+      <h5 class="mb-2">{{ ticket.event.date|date:"M d, Y P" }} at {{ ticket.event.venue }}</h5>
+      {% if ticket.qr_code %}
+        <img
+          src="{{ ticket.qr_code.url }}"
+          alt="QR Code"
+          class="img-fluid mx-auto"
+          style="max-width: 180px; margin: 1rem auto;"
+        >
+      {% else %}
+        <div class="bg-light border rounded d-flex align-items-center justify-content-center mx-auto" style="width: 180px; height: 180px; margin: 1rem auto;">
+          <div class="text-center">
+            <div class="spinner-border text-primary mb-2" role="status"></div>
+            <small class="text-muted d-block">Generating QR Code...</small>
+          </div>
+        </div>
+      {% endif %}
+      <p class="text-muted small">Please present this QR code at the event.</p>
+    </div>
+
+<a href="{% url 'user_dashboard' %}" class="btn btn-primary mt-4 px-4 py-2 animate__animated animate__fadeIn animate__delay-1s">
+  ⬅️ Back to Dashboard
+</a>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  {% if not ticket.qr_code %}
+  <script>
+    // Auto-refresh since QR code is still being generated
+    setTimeout(() => {
+      location.reload();
+    }, 3000); // Refresh after 3 seconds
+  </script>
+  {% endif %}
+</body>
+</html>

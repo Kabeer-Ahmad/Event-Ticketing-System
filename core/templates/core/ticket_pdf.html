@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body   { font-family: "Inter", sans-serif; color:#333; }
+    .box   { border:2px solid #3d5afe; border-radius:12px; padding:24px; width:450px; }
+    h1     { margin:0 0 10px 0; color:#3d5afe; font-size:24px; }
+    .meta  { font-size:14px; margin-bottom:16px; }
+    img    { width:160px; height:160px; border:1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>{{ ticket.event.name }}</h1>
+    <p class="meta">
+      Date: {{ ticket.event.date|date:"F d, Y P" }}<br>
+      Venue: {{ ticket.event.venue }}<br>
+      Ticket Code: {{ ticket.unique_code }}
+    </p>
+    <img src="{{ qr_url }}" alt="QR code">
+  </div>
+</body>
+</html>

@@ -1,0 +1,563 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>About ETS - Event Ticketing System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Bootstrap CSS & Animate.css -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 30%, #e2e8f0 60%, #f8fafc 100%);
+      background-size: 300% 300%;
+      animation: gradientShift 20s ease-in-out infinite;
+    }
+    
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .navbar {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Gradient signup button */
+    .btn-signup {
+      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 25%, #06b6d4 50%, #10b981 75%, #059669 100%);
+      background-size: 300% 300%;
+      animation: btnGradientShift 4s ease-in-out infinite;
+      border: none;
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    }
+    
+    @keyframes btnGradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    
+    .btn-signup:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+      background-size: 400% 400%;
+      animation-duration: 2s;
+      color: white;
+    }
+
+    .hero-section {
+      padding: 120px 0 80px 0;
+      text-align: center;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #f8fafc 100%);
+      background-size: 200% 200%;
+      animation: heroGradientShift 18s ease-in-out infinite;
+      color: #374151;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    @keyframes heroGradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><polygon fill="rgba(255,255,255,0.1)" points="1000,100 1000,0 0,0 0,100"></polygon></svg>');
+      opacity: 0.3;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 20px;
+      padding: 2rem;
+      height: 100%;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .feature-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem auto;
+      font-size: 2rem;
+      color: white;
+    }
+
+    .icon-primary { background: linear-gradient(135deg, #2563eb, #3b82f6); }
+    .icon-success { background: linear-gradient(135deg, #10b981, #34d399); }
+    .icon-warning { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+    .icon-info { background: linear-gradient(135deg, #06b6d4, #22d3ee); }
+
+    .stats-section {
+      background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 50%, #f8fafc 100%);
+      background-size: 200% 200%;
+      animation: statsGradientShift 16s ease-in-out infinite;
+      color: #374151;
+      padding: 80px 0;
+    }
+    
+    @keyframes statsGradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: bold;
+      display: block;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-top: 0.5rem;
+    }
+
+    .team-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .team-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .team-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin: 2rem auto 1rem auto;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: white;
+    }
+
+    .timeline {
+      position: relative;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      transform: translateX(-50%);
+    }
+
+    .timeline-item {
+      margin-bottom: 3rem;
+      position: relative;
+    }
+
+    .timeline-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      width: 45%;
+      position: relative;
+    }
+
+    .timeline-item:nth-child(odd) .timeline-content {
+      margin-left: auto;
+    }
+
+    .timeline-item:nth-child(even) .timeline-content {
+      margin-right: auto;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: 50%;
+      top: 2rem;
+      width: 20px;
+      height: 20px;
+      background: #2563eb;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      border: 4px solid white;
+      box-shadow: 0 0 0 4px #2563eb;
+    }
+
+    /* Dark professional footer */
+    footer {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%) !important;
+      color: #e2e8f0 !important;
+      padding: 3rem 1rem 2rem 1rem !important;
+      font-size: 0.9rem;
+      text-align: center;
+      position: relative;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    footer a {
+      color: #94a3b8 !important;
+      margin: 0 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    footer a:hover {
+      color: #cbd5e1 !important;
+      text-decoration: underline;
+    }
+    
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .footer-links {
+      margin-bottom: 1.5rem;
+    }
+    
+    .footer-copyright {
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 768px) {
+      .timeline::before {
+        left: 2rem;
+      }
+      
+      .timeline-content {
+        width: calc(100% - 4rem);
+        margin-left: 4rem !important;
+      }
+      
+      .timeline-dot {
+        left: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+  <div class="container">
+    <a class="navbar-brand fw-bold fs-3 text-primary" href="{% url 'event_list' %}">
+      <i class="fa-solid fa-ticket me-2"></i>ETS
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link fw-semibold px-3 py-2 rounded-pill" href="{% url 'event_list' %}">
+            <i class="fa-solid fa-home me-1"></i>Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fw-semibold px-3 py-2 rounded-pill active" href="{% url 'about' %}">
+            <i class="fa-solid fa-info-circle me-1"></i>About
+          </a>
+        </li>
+      </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link fw-semibold px-3 py-2 rounded-pill" href="{% url 'login' %}">
+            <i class="fa-solid fa-sign-in-alt me-1"></i>Login
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-signup px-4 py-2 rounded-pill fw-semibold" href="{% url 'account_signup' %}">
+            <i class="fa-solid fa-user-plus me-1"></i>Sign Up
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-content">
+    <div class="container">
+      <h1 class="display-4 fw-bold mb-4 animate__animated animate__fadeInDown">
+        About ETS
+      </h1>
+      <p class="lead mb-4 animate__animated animate__fadeInUp">
+        Revolutionizing event ticketing with cutting-edge technology and user-centric design
+      </p>
+      <div class="animate__animated animate__fadeInUp animate__delay-1s">
+        <a href="{% url 'event_list' %}" class="btn btn-light btn-lg px-5 py-3 me-3">
+          <i class="fa-solid fa-home me-2"></i>Back to Home
+        </a>
+        <a href="{% url 'login' %}" class="btn btn-primary btn-lg px-5 py-3" style="background: linear-gradient(135deg, #2563eb, #3b82f6); border: none; font-weight: 600;">
+          <i class="fa-solid fa-sign-in-alt me-2"></i>Get Started
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Mission Section -->
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-center">
+        <h2 class="fw-bold mb-4">Our Mission</h2>
+        <p class="lead">
+          We're on a mission to make event ticketing fair, transparent, and accessible to everyone. 
+          Our platform ensures that genuine fans get tickets through our innovative holding system, 
+          preventing scalping and creating equal opportunities for all.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center fw-bold mb-5">What Makes Us Different</h2>
+    <div class="row g-4">
+      <div class="col-lg-3 col-md-6">
+        <div class="feature-card text-center animate__animated animate__fadeInUp">
+          <div class="feature-icon icon-primary">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <h5 class="fw-bold mb-3">Fair Distribution</h5>
+          <p>First-come-first-served ticket holding system ensures everyone gets an equal chance based on login time.</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="feature-card text-center animate__animated animate__fadeInUp animate__delay-1s">
+          <div class="feature-icon icon-success">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <h5 class="fw-bold mb-3">Real-time Updates</h5>
+          <p>Live ticket availability tracking with instant notifications and automatic page refreshes.</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="feature-card text-center animate__animated animate__fadeInUp animate__delay-2s">
+          <div class="feature-icon icon-warning">
+            <i class="fa-solid fa-mobile-screen"></i>
+          </div>
+          <h5 class="fw-bold mb-3">Mobile Ready</h5>
+          <p>QR code generation, mobile-optimized interface, and downloadable PDF tickets for easy access.</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="feature-card text-center animate__animated animate__fadeInUp animate__delay-3s">
+          <div class="feature-icon icon-info">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <h5 class="fw-bold mb-3">Smart Analytics</h5>
+          <p>Comprehensive ticket statistics, capacity management, and detailed event insights for organizers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3 col-md-6">
+        <div class="stat-item animate__animated animate__fadeInUp">
+          <span class="stat-number">10K+</span>
+          <div class="stat-label">Tickets Sold</div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="stat-item animate__animated animate__fadeInUp animate__delay-1s">
+          <span class="stat-number">500+</span>
+          <div class="stat-label">Events Hosted</div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="stat-item animate__animated animate__fadeInUp animate__delay-2s">
+          <span class="stat-number">99.9%</span>
+          <div class="stat-label">Uptime</div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="stat-item animate__animated animate__fadeInUp animate__delay-3s">
+          <span class="stat-number">24/7</span>
+          <div class="stat-label">Support</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Timeline Section -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="text-center fw-bold mb-5">Our Journey</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h5 class="fw-bold text-primary">2024 - Founded</h5>
+          <p>ETS was founded with the vision of creating a fair and transparent ticketing platform that puts users first.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h5 class="fw-bold text-primary">2024 - Innovation</h5>
+          <p>Developed our groundbreaking ticket holding system that ensures fair distribution based on login timing.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h5 class="fw-bold text-primary">2025 - Growth</h5>
+          <p>Expanded our platform with enhanced UI, real-time statistics, and mobile-first design principles.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h5 class="fw-bold text-primary">Future - Innovation</h5>
+          <p>Continuing to innovate with AI-powered recommendations, blockchain integration, and global expansion.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Team Section -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center fw-bold mb-5">Meet Our Team</h2>
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8">
+        <div class="team-card text-center">
+          <div class="team-avatar">
+            <i class="fa-solid fa-user-tie"></i>
+          </div>
+          <h5 class="fw-bold">Kabeer Ahmad</h5>
+          <p class="text-muted">CEO & Developer</p>
+          <p class="px-3 pb-3">Passionate about creating fair and accessible event experiences for everyone. Leading both the vision and technical development of the platform to ensure innovation meets user needs.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+  <div class="container text-center text-white">
+    <h2 class="fw-bold mb-4">Ready to Experience Fair Ticketing?</h2>
+    <p class="lead mb-4">Join thousands of users who trust ETS for their event ticketing needs.</p>
+    <a href="{% url 'event_list' %}" class="btn btn-light btn-lg px-5 py-3">
+      <i class="fa-solid fa-rocket me-2"></i>Explore Events
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-content">
+          <div class="footer-links">
+        <a href="{% url 'event_list' %}">Home</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="#events">Events</a>
+        <a href="{% url 'account_signup' %}">Sign Up</a>
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
+        <a href="{% url 'terms_of_service' %}">Terms of Service</a>
+        <a href="{% url 'contact_us' %}">Contact Us</a>
+      </div>
+    <div class="footer-copyright">
+      &copy; 2025 ETS - Event Ticketing System. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // Animate numbers on scroll
+  function animateNumbers() {
+    const stats = document.querySelectorAll('.stat-number');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const target = entry.target;
+          const text = target.textContent;
+          const number = parseInt(text.replace(/\D/g, ''));
+          const suffix = text.replace(/[\d.]/g, '');
+          
+          let current = 0;
+          const increment = number / 100;
+          const timer = setInterval(() => {
+            current += increment;
+            if (current >= number) {
+              current = number;
+              clearInterval(timer);
+            }
+            target.textContent = Math.floor(current) + suffix;
+          }, 20);
+          
+          observer.unobserve(target);
+        }
+      });
+    });
+    
+    stats.forEach(stat => observer.observe(stat));
+  }
+  
+  // Initialize animations
+  document.addEventListener('DOMContentLoaded', animateNumbers);
+</script>
+
+</body>
+</html> 
